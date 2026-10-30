@@ -1,0 +1,27 @@
+
+
+.green-input {
+  width: 2em;
+  text-align: center;
+}
+
+.yellow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.yellow-letter-input {
+  width: 2em;
+  text-align: center;
+}
+
+.yellow-position-checkboxes label {
+  margin-right: 0.5em;
+}
+
+#results-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
