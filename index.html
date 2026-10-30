@@ -1,61 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Solver</title>
+<meta charset="UTF-8">
+<title>Wordle Solver</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Wordle Solver</h1>
-    
-    <!-- Section A: Green Letters-->
-    <section id="green-letters">
-        <h2>Green Letters</h2>
-        <div id="green-inputs">
-            <input type="text" maxlength="1" class="green-input" data-position="0">
-            <input type="text" maxlength="1" class="green-input" data-position="1">
-            <input type="text" maxlength="1" class="green-input" data-position="2">
-            <input type="text" maxlength="1" class="green-input" data-position="3">
-            <input type="text" maxlength="1" class="green-input" data-position="4">
+
+<!--help icon-->
+<div class="help" id="help">
+    <button type="button" class="help-icon" id="help-icon" aria-label="How Wordle colors work" aria-describedby="help-panel">?</button>
+    <div class="help-panel" id="help-panel" role="tooltip">
+        <h3>How the colors work</h3>
+        <div class="help-item">
+            <span class="swatch swatch-green"></span>
+            <p><strong>green</strong> means the letter is in the word and in the correct position.</p>
         </div>
+        <div class="help-item">
+            <span class="swatch swatch-yellow"></span>
+            <p><strong>yellow</strong> means the letter is in the word but in the wrong position.</p>
+        </div>
+        <div class="help-item">
+            <span class="swatch swatch-gray"></span>
+            <p><strong>gray</strong> means the letter is not in the word.</p>
+        </div>
+    </div>
+</div>
+
+<main class="app">
+    <header class="app-header">
+        <h1> Wordle Solver </h1>
+        <p class="subtitle">Enter what you know and see what's left.</p>
+    </header>
+</main>
+
+
+
+  <!-- SECTION A: GREEN LETTERS -->
+  <section id="section-green">
+    <h2>Green Letters (Correct Position)</h2>
+    <div id="green-inputs">
+      <input type="text" maxlength="1" class="green-input" data-pos="0">
+      <input type="text" maxlength="1" class="green-input" data-pos="1">
+      <input type="text" maxlength="1" class="green-input" data-pos="2">
+      <input type="text" maxlength="1" class="green-input" data-pos="3">
+      <input type="text" maxlength="1" class="green-input" data-pos="4">
+    </div>
+  </section>
+
+  <!-- SECTION B: YELLOW LETTERS -->
+  <section id="section-yellow">
+    <h2>Yellow Letters (In Word, Wrong Position)</h2>
+    <div id="yellow-entries"></div>
+    <button id="add-yellow-btn" type="button">+ Add Yellow Letter</button>
+  </section>
+
+  <!-- SECTION C: GRAY LETTERS -->
+  <section id="section-gray">
+    <h2>Gray Letters (Not In Word)</h2>
+    <input type="text" id="gray-input" placeholder="e.g. Q,W,X,Z">
+  </section>
+
+  <!-- RESULTS -->
+  <section class="card" id="section-results">
+      <h2 id="results-count">0 possible words</h2>
+      <div id="results-list"></div>
     </section>
+  </main>
 
-    <!-- Section B: Yellow Letters-->
-     <section id="yellow-letters">
-        <h1>Yellow Letters</h1>
-        <div id="yellow-entries"></div>
-        <button id="add-yellow-btn" type="button"> + Add Yellow Letter </button>
-    </section>
+  <!-- Template for a yellow letter row (cloned via JS) -->
+  <template id="yellow-row-template">
+    <div class="yellow-row">
+      <input type="text" maxlength="1" class="yellow-letter-input" placeholder="Letter">
+      <span class="yellow-position-checkboxes">
+        <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="0"> 1</label>
+        <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="1"> 2</label>
+        <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="2"> 3</label>
+        <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="3"> 4</label>
+        <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="4"> 5</label>
+      </span>
+      <button type="button" class="remove-yellow-btn">Remove</button>
+    </div>
+  </template>
 
-    
-
-    <!-- Section C: Gray Letters-->
-     <section id="section-gray">
-        <h2>Gray Letters</h2>
-        <input type="text" id="gray-input" placeholder="e.g. Q,W,X,Z">
-     </section>
-
-    <!-- Result: -->
-     <section id="section-gray">
-        <h2>Gray Letters (Not in Word)</h2>
-        <div id="results-list"></div>
-     </section>
-
-     <!-- Template for a yellow letter row (cloned via JS)-->
-      <template id="yellow-row-template">
-        <div class="yellow-row">
-            <input typ="text" maxlength="1" class="yellow-letter-input" placeholder="Letter">
-            <span class="yellow-position-checkboxes">
-                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="0"> 1</label>
-                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="1"> 2</label>
-                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="2"> 3</label>
-                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="3"> 4</label>
-                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="4"> 5</label>
-            </span>
-            <button type="button" class="remove-yellow-btn">Remove</button>
-            </div>
-      </template>
-
-      <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
