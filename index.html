@@ -28,5 +28,34 @@
     </section>
 
     
+
+    <!-- Section C: Gray Letters-->
+     <section id="section-gray">
+        <h2>Gray Letters</h2>
+        <input type="text" id="gray-input" placeholder="e.g. Q,W,X,Z">
+     </section>
+
+    <!-- Result: -->
+     <section id="section-gray">
+        <h2>Gray Letters (Not in Word)</h2>
+        <div id="results-list"></div>
+     </section>
+
+     <!-- Template for a yellow letter row (cloned via JS)-->
+      <template id="yellow-row-template">
+        <div class="yellow-row">
+            <input typ="text" maxlength="1" class="yellow-letter-input" placeholder="Letter">
+            <span class="yellow-position-checkboxes">
+                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="0"> 1</label>
+                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="1"> 2</label>
+                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="2"> 3</label>
+                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="3"> 4</label>
+                <label><input type="checkbox" class="yellow-pos-checkbox" data-pos="4"> 5</label>
+            </span>
+            <button type="button" class="remove-yellow-btn">Remove</button>
+            </div>
+      </template>
+
+      <script src="script.js"></script>
 </body>
 </html>
