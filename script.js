@@ -103,7 +103,7 @@ function wordMatches(word, greens, yellows, grays) {
       return false;
   }
 }
-}
+
 
 for (const grayLetter of grays) {
   const isAlsoGreen = greens.includes(grayLetter);
@@ -115,3 +115,38 @@ for (const grayLetter of grays) {
     return false;
   }
 }
+
+// Yellow Check
+for (const {letter, forbiddenPositions } of yellows) {
+  if (!word.includes(letter)) {
+    return false;
+  }
+  for (const pos of forbiddenPositions) {
+    if (word[pos] === letter) {
+      return false;
+    }
+  }
+}
+
+return true;
+}
+
+function runFilter() {
+  const greens = getGreenLetters();
+  const yellows = getYellowConstraints();
+  const grays = getGrayLetters();
+
+  const matches = WORD_LIST.filter(word => wordMatches(word, greens, yellows, grays));
+
+  resultsCount.textContent = `${matches.length} possible word${matches.length === 1 ? '' : 's'}`;
+  resultsList.innerHTML = '';
+  matches.forEach(word => {
+    const span = document.createElement('span');
+    span.className = 'result-word';
+    span.textContent = word;
+    resultsList.appendChild(span);
+  });
+}
+
+// Init renderer
+updateYellowCheckboxAvailability();
