@@ -217,10 +217,8 @@ function runFilter() {
 // Initial render (in case word list loads before any interaction)
 updateYellowCheckboxAvailability();
 
-// ---------------------------------------------
 // Help icon: tap to toggle on touch devices
 // (hover and keyboard focus are handled in CSS)
-// ---------------------------------------------
 const helpEl = document.getElementById('help');
 const helpIcon = document.getElementById('help-icon');
 
