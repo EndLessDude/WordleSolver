@@ -1,6 +1,6 @@
 # Wordle Solver
 
-A simple, calm, browser-based Wordle helper. Enter what you know from your guesses and the app instantly narrows down the list of possible answers.
+This wordle solver will solve wordle's better than any other wordle solver.
 
 ## Features
 
