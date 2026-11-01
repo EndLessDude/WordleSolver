@@ -3,84 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wordle Solver</title>
+<title>Better Wordle Solver</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- HELP ICON (top right) -->
-  <div class="help" id="help">
-    <button type="button" class="help-icon" id="help-icon" aria-label="How Wordle colors work" aria-describedby="help-panel">?</button>
-    <div class="help-panel" id="help-panel" role="tooltip">
-      <h3>How the colors work</h3>
-      <div class="help-item">
-        <span class="swatch swatch-green"></span>
-        <p><strong>Green</strong> means the letter is in the word and in the correct position.</p>
-      </div>
-      <div class="help-item">
-        <span class="swatch swatch-yellow"></span>
-        <p><strong>Yellow</strong> means the letter is in the word, but in a different position.</p>
-      </div>
-      <div class="help-item">
-        <span class="swatch swatch-gray"></span>
-        <p><strong>Gray</strong> means the letter is not in the word at all.</p>
-      </div>
+  <div class="top-bar">
+    <div class="top-left">
+      <a class="demo-btn" href="wordledemo.mp4" target="_blank">🎥 DEMO</a>
+    </div>
+    <h1 class="top-middle">Better Wordle Solver</h1>
+    <div class="top-right">
+      <a class="today-btn" href="https://www.nytimes.com/games/wordle/index.html" target="_blank">Today's Wordle</a>
     </div>
   </div>
 
-  <main class="app">
-    <header class="app-header">
-      <h1>Wordle Solver</h1>
-      <p class="subtitle">Enter what you know and see what's left.</p>
-    </header>
+  <div class="layout">
 
-    <!-- SECTION A: GREEN LETTERS -->
-    <section class="card" id="section-green">
-      <h2>Green letters</h2>
-      <p class="hint">Letters in the correct position.</p>
-      <div id="green-inputs">
-        <input type="text" maxlength="1" class="green-input" data-pos="0" aria-label="Position 1" autocomplete="off">
-        <input type="text" maxlength="1" class="green-input" data-pos="1" aria-label="Position 2" autocomplete="off">
-        <input type="text" maxlength="1" class="green-input" data-pos="2" aria-label="Position 3" autocomplete="off">
-        <input type="text" maxlength="1" class="green-input" data-pos="3" aria-label="Position 4" autocomplete="off">
-        <input type="text" maxlength="1" class="green-input" data-pos="4" aria-label="Position 5" autocomplete="off">
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <!-- GREEN LETTERS -->
+      <div class="section">
+        <h2>
+          Green letters
+          <span class="help">?
+            <span class="popup">Green letters are letters that are in the word and are also in the correct spot.</span>
+          </span>
+        </h2>
+        <div id="green-inputs">
+          <input type="text" maxlength="1" class="green-input" data-pos="0" aria-label="Position 1" autocomplete="off">
+          <input type="text" maxlength="1" class="green-input" data-pos="1" aria-label="Position 2" autocomplete="off">
+          <input type="text" maxlength="1" class="green-input" data-pos="2" aria-label="Position 3" autocomplete="off">
+          <input type="text" maxlength="1" class="green-input" data-pos="3" aria-label="Position 4" autocomplete="off">
+          <input type="text" maxlength="1" class="green-input" data-pos="4" aria-label="Position 5" autocomplete="off">
+        </div>
       </div>
-    </section>
 
-    <!-- SECTION B: YELLOW LETTERS -->
-    <section class="card" id="section-yellow">
-      <h2>Yellow letters</h2>
-      <p class="hint">Letters in the word, plus the positions they can't be in.</p>
-      <div id="yellow-entries"></div>
-      <button id="add-yellow-btn" type="button">+ Add yellow letter</button>
-    </section>
+      <!-- YELLOW LETTERS -->
+      <div class="section">
+        <h2>
+          Yellow letters
+          <span class="help">?
+            <span class="popup">Yellow letters are letters that are in the word but not in the correct spot.</span>
+          </span>
+        </h2>
+        <div id="yellow-entries"></div>
+        <button id="add-yellow-btn" type="button">+ Add yellow letter</button>
+      </div>
 
-    <!-- SECTION C: GRAY LETTERS -->
-    <section class="card" id="section-gray">
-      <h2>Gray letters</h2>
-      <p class="hint">Letters that are not in the word.</p>
-      <input type="text" id="gray-input" placeholder="e.g. Q, W, X, Z" autocomplete="off">
-    </section>
+      <!-- GRAY LETTERS -->
+      <div class="section">
+        <h2>
+          Gray letters
+          <span class="help">?
+            <span class="popup">Gray letters are letters that are not used in the word.</span>
+          </span>
+        </h2>
+        <div id="gray-inputs"></div>
+      </div>
 
-    <!-- RESULTS -->
-    <section class="card" id="section-results">
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
       <h2 id="results-count">0 possible words</h2>
       <div id="results-list"></div>
-    </section>
-  </main>
+    </div>
 
-  <!-- Template for a yellow letter row (cloned via JS) -->
+  </div>
+
+  <!-- Template for one yellow letter row (copied by script.js) -->
   <template id="yellow-row-template">
     <div class="yellow-row">
-      <input type="text" maxlength="1" class="yellow-letter-input" placeholder="A" aria-label="Yellow letter" autocomplete="off">
-      <div class="yellow-position-checkboxes">
-        <span class="cannot-label">Not in</span>
-        <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="0"><span>1</span></label>
-        <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="1"><span>2</span></label>
-        <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="2"><span>3</span></label>
-        <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="3"><span>4</span></label>
-        <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="4"><span>5</span></label>
-      </div>
+      <input type="text" maxlength="1" class="yellow-letter-input" aria-label="Yellow letter" autocomplete="off">
+      <span class="cannot-label">Not in spot</span>
+      <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="0"><span>1</span></label>
+      <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="1"><span>2</span></label>
+      <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="2"><span>3</span></label>
+      <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="3"><span>4</span></label>
+      <label class="pos-chip"><input type="checkbox" class="yellow-pos-checkbox" data-pos="4"><span>5</span></label>
       <button type="button" class="remove-yellow-btn" aria-label="Remove this letter">&times;</button>
     </div>
   </template>

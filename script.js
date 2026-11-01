@@ -1,6 +1,4 @@
-// ---------------------------------------------
 // Wordle Solver - script.js
-// ---------------------------------------------
 
 let WORD_LIST = [];
 
@@ -8,7 +6,7 @@ let WORD_LIST = [];
 fetch('words.json')
   .then(response => response.json())
   .then(data => {
-    // Normalize, dedupe, and keep only valid 5-letter words
+    // Lowercase, remove duplicates, keep only 5-letter words
     const seen = new Set();
     WORD_LIST = data
       .map(w => String(w).toLowerCase().trim())
@@ -26,34 +24,38 @@ fetch('words.json')
   });
 
 // ---------------------------------------------
-// DOM references
+// Page elements
 // ---------------------------------------------
 const greenInputs = document.querySelectorAll('.green-input');
 const yellowEntriesContainer = document.getElementById('yellow-entries');
 const addYellowBtn = document.getElementById('add-yellow-btn');
 const yellowRowTemplate = document.getElementById('yellow-row-template');
-const grayInput = document.getElementById('gray-input');
+const grayContainer = document.getElementById('gray-inputs');
 const resultsCount = document.getElementById('results-count');
 const resultsList = document.getElementById('results-list');
 
+const GRAY_BOX_COUNT = 30;
+const grayInputs = [];
+
 // ---------------------------------------------
-// SECTION A: Green letters
+// Green letters
 // ---------------------------------------------
 greenInputs.forEach((input, index) => {
   input.addEventListener('input', () => {
-    // Force uppercase display, letters only
+    // Letters only, shown uppercase
     input.value = input.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
+    input.classList.toggle('filled', input.value !== '');
     updateYellowCheckboxAvailability();
     runFilter();
 
-    // Auto-advance to the next box after typing a letter
+    // Jump to the next box after typing a letter
     if (input.value && index < greenInputs.length - 1) {
       greenInputs[index + 1].focus();
     }
   });
 
   input.addEventListener('keydown', (e) => {
-    // Backspace on an empty box moves to the previous box
+    // Backspace on an empty box goes back one box
     if (e.key === 'Backspace' && !input.value && index > 0) {
       greenInputs[index - 1].focus();
     }
@@ -61,7 +63,7 @@ greenInputs.forEach((input, index) => {
 });
 
 function getGreenLetters() {
-  // Returns array of length 5: letter (lowercase) or null
+  // Array of 5: a lowercase letter or null
   const arr = [null, null, null, null, null];
   greenInputs.forEach(input => {
     const pos = parseInt(input.dataset.pos, 10);
@@ -72,7 +74,7 @@ function getGreenLetters() {
 }
 
 // ---------------------------------------------
-// SECTION B: Yellow letters
+// Yellow letters
 // ---------------------------------------------
 addYellowBtn.addEventListener('click', () => {
   addYellowRow();
@@ -85,16 +87,15 @@ function addYellowRow() {
   const letterInput = row.querySelector('.yellow-letter-input');
   letterInput.addEventListener('input', () => {
     letterInput.value = letterInput.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
+    letterInput.classList.toggle('filled', letterInput.value !== '');
     runFilter();
   });
 
-  const checkboxes = row.querySelectorAll('.yellow-pos-checkbox');
-  checkboxes.forEach(cb => {
+  row.querySelectorAll('.yellow-pos-checkbox').forEach(cb => {
     cb.addEventListener('change', runFilter);
   });
 
-  const removeBtn = row.querySelector('.remove-yellow-btn');
-  removeBtn.addEventListener('click', () => {
+  row.querySelector('.remove-yellow-btn').addEventListener('click', () => {
     row.remove();
     runFilter();
   });
@@ -103,34 +104,28 @@ function addYellowRow() {
   updateYellowCheckboxAvailability();
 }
 
-// Disable + uncheck + visually mark checkboxes for positions that are
-// already locked in by a green letter, for every yellow row.
+// Spots with a green letter are checked and locked in every yellow row
 function updateYellowCheckboxAvailability() {
   const greens = getGreenLetters();
-  const rows = yellowEntriesContainer.querySelectorAll('.yellow-row');
-  rows.forEach(row => {
-    const checkboxes = row.querySelectorAll('.yellow-pos-checkbox');
-    checkboxes.forEach(cb => {
+  yellowEntriesContainer.querySelectorAll('.yellow-row').forEach(row => {
+    row.querySelectorAll('.yellow-pos-checkbox').forEach(cb => {
       const pos = parseInt(cb.dataset.pos, 10);
       if (greens[pos] !== null) {
         cb.checked = true;
         cb.disabled = true;
       } else {
         cb.disabled = false;
-        // leave checked state as the user set it
       }
     });
   });
 }
 
 function getYellowConstraints() {
-  // Returns array of { letter: 'r', forbiddenPositions: Set([0,2]) }
+  // Array of { letter: 'r', forbiddenPositions: Set([0, 2]) }
   const constraints = [];
-  const rows = yellowEntriesContainer.querySelectorAll('.yellow-row');
-  rows.forEach(row => {
-    const letterInput = row.querySelector('.yellow-letter-input');
-    const letter = letterInput.value.trim().toLowerCase();
-    if (letter.length !== 1) return; // skip empty rows
+  yellowEntriesContainer.querySelectorAll('.yellow-row').forEach(row => {
+    const letter = row.querySelector('.yellow-letter-input').value.trim().toLowerCase();
+    if (letter.length !== 1) return; // empty row, no restriction
 
     const forbiddenPositions = new Set();
     row.querySelectorAll('.yellow-pos-checkbox').forEach(cb => {
@@ -145,52 +140,70 @@ function getYellowConstraints() {
 }
 
 // ---------------------------------------------
-// SECTION C: Gray letters
+// Gray letters (30 single-letter boxes)
 // ---------------------------------------------
-grayInput.addEventListener('input', () => {
-  runFilter();
-});
+for (let i = 0; i < GRAY_BOX_COUNT; i++) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.maxLength = 1;
+  input.className = 'gray-input';
+  input.autocomplete = 'off';
+  input.setAttribute('aria-label', 'Gray letter ' + (i + 1));
+
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 1);
+    input.classList.toggle('filled', input.value !== '');
+    runFilter();
+
+    // Jump to the next box after typing a letter
+    if (input.value && i < GRAY_BOX_COUNT - 1) {
+      grayInputs[i + 1].focus();
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    // Backspace on an empty box goes back one box
+    if (e.key === 'Backspace' && !input.value && i > 0) {
+      grayInputs[i - 1].focus();
+    }
+  });
+
+  grayContainer.appendChild(input);
+  grayInputs.push(input);
+}
 
 function getGrayLetters() {
-  // Accepts comma/space separated letters, case-insensitive
-  return grayInput.value
-    .toLowerCase()
-    .split(/[^a-z]/)
-    .filter(ch => ch.length === 1);
+  // Every filled gray box, lowercase
+  return grayInputs
+    .map(input => input.value.trim().toLowerCase())
+    .filter(letter => letter !== '');
 }
 
 // ---------------------------------------------
-// Core filtering logic
+// Filtering
 // ---------------------------------------------
 function wordMatches(word, greens, yellows, grays) {
-  // --- Green check ---
+  // Green: exact letter in exact spot
   for (let i = 0; i < 5; i++) {
     if (greens[i] !== null && word[i] !== greens[i]) {
       return false;
     }
   }
 
-  // --- Gray check ---
+  // Gray: letter can't be in the word, unless it's also green/yellow
+  // (that happens when a guess has a repeated letter)
   for (const grayLetter of grays) {
     const isAlsoGreen = greens.includes(grayLetter);
     const isAlsoYellow = yellows.some(y => y.letter === grayLetter);
-    if (isAlsoGreen || isAlsoYellow) {
-      continue;
-    }
-    if (word.includes(grayLetter)) {
-      return false;
-    }
+    if (isAlsoGreen || isAlsoYellow) continue;
+    if (word.includes(grayLetter)) return false;
   }
 
-  // --- Yellow check ---
+  // Yellow: must contain the letter, but not in the blocked spots
   for (const { letter, forbiddenPositions } of yellows) {
-    if (!word.includes(letter)) {
-      return false;
-    }
+    if (!word.includes(letter)) return false;
     for (const pos of forbiddenPositions) {
-      if (word[pos] === letter) {
-        return false;
-      }
+      if (word[pos] === letter) return false;
     }
   }
 
@@ -206,29 +219,14 @@ function runFilter() {
 
   resultsCount.textContent = `${matches.length} possible word${matches.length === 1 ? '' : 's'}`;
   resultsList.innerHTML = '';
+
   matches.forEach(word => {
-    const span = document.createElement('span');
-    span.className = 'result-word';
-    span.textContent = word;
-    resultsList.appendChild(span);
+    const div = document.createElement('div');
+    div.className = 'result-word';
+    div.textContent = word;
+    resultsList.appendChild(div);
   });
 }
 
-// Initial render (in case word list loads before any interaction)
+// Start up
 updateYellowCheckboxAvailability();
-
-// Help icon: tap to toggle on touch devices
-// (hover and keyboard focus are handled in CSS)
-const helpEl = document.getElementById('help');
-const helpIcon = document.getElementById('help-icon');
-
-helpIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  helpEl.classList.toggle('open');
-});
-
-document.addEventListener('click', (e) => {
-  if (!helpEl.contains(e.target)) {
-    helpEl.classList.remove('open');
-  }
-});
