@@ -1,58 +1,33 @@
-# Wordle Solver
+# Better Wordle Solver
 
-This wordle solver will solve wordle's better than any other wordle solver.
+## Description:
+Better wordle solver is an application which shows the user the possible words for Wordle's based on the feedback the user provides the algorithm with based of previous guesses.
 
-## Features
+## How to use it:
 
-- **Green letters**: five boxes, one per position, for letters you know are in the correct spot. Typing a letter auto-advances to the next box, and Backspace on an empty box moves back.
-- **Yellow letters**: add as many yellow letters as you need. For each one, choose the positions it cannot be in. Positions already locked in by a green letter are automatically crossed out and disabled.
-- **Gray letters**: type letters that are not in the word (e.g. `Q, W, X, Z`). Commas and spaces are both fine.
-- **Live results**: the word count (e.g. `23 possible words`) and the matching words update on every change. Removing or editing any constraint recalculates immediately.
-- **Help icon**: a `?` icon in the top right explains green, yellow and gray letters. It expands on hover or keyboard focus, and toggles on tap for touch devices.
-- **Calm design**: a minimal deep teal and warm cream color scheme with roomy, evenly spaced inputs.
+Step 1: The user will guess a random 5-letter word in Wordle, such as "AUDIO".
 
-## Project Structure
+Result: After entering the word "AUDIO" the user will see some letters turn gray, yellow, or green. 
 
-```
-.
-├── index.html    # Page structure and the yellow-row template
-├── script.js     # Word loading, constraint reading, and filtering logic
-├── style.css     # Styling and color scheme
-├── words.json    # List of ~2,300 possible Wordle answers
-└── README.md
-```
+Step 2: 
+If there are any green letters, the user will enter then in their respective position in the Better Wordle Solver application.
+If any letters turn yellow, the user will click "+ Add Yellow Letter" then they will enter the letter, and finally click on the position(s) it was yellow.
+If any letters turn gray, then the user will enter that letter at the bottom in the boxes for gray letters.
 
+Result: The application will use it's algorithm to filter out words and show all the possible words.
 
-## Word List Format
+Step 3: The user will use one of the possible words and then repeat the cycle until they get the correct word.
 
-`words.json` should be a plain JSON array of lowercase 5-letter words:
+Result: The wordle has been solved. Yay!
 
-```json
-[
-  "aback",
-  "abase",
-  "abate"
-]
-```
+## How it's different from other wordle solvers:
 
-On load, the app lowercases every entry, removes duplicates, and discards anything that is not exactly 5 letters. It never adds words of its own.
+Unlike other wordle solvers, mine has a special feature for yellow letters. The user the select the positions where a certain letter is yellow. This way the algorithm will not show the words with the yellow letters in positions it cannot be in. So far, this feature has not been in any other wordle solver that I have used and it was the reason I built this project.
 
-## How Filtering Works
+## How I built it:
 
-A word appears in the results only if it passes every constraint:
+I found a list with 8000+ possible wordle guesses and then created a json database with all those words. Then I built a filtering algorithm in JavaScript using for loops and if statements which filter out the words.
 
-| Section | Rule |
-| --- | --- |
-| Green | The word has the entered letter at that exact position. Empty boxes impose no restriction. |
-| Yellow | The word contains the letter, and the letter is not in any position marked as unavailable. |
-| Gray | The word contains none of the gray letters. |
-
-All input is case-insensitive.
-
-### Repeated letters
-
-If a letter is entered as gray but is also entered as green or yellow (which happens in Wordle when a guess contains a letter twice and only one copy is in the answer), the green or yellow rule takes precedence. The letter is not blanket-excluded, because that would contradict the other constraint. If you would rather have gray always win in that conflict, edit the gray check in `wordMatches()` in `script.js`.
-
-## Use this link to try the my project:
+## Try the app using this link:
 
 https://betterwordlesolver.netlify.app/
